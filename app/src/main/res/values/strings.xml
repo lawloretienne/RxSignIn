@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">RxSignIn</string>
+    <string name="invalid_email">Email is invalid</string>
+    <string name="invalid_password">Password must be at least 6 characters</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_in_message">You have signed in!</string>
+</resources>

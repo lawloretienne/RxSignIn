@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="MAX_TEXT_LENGTH">20</integer>
+    <integer name="EMAIL_TEXT_LENGTH">35</integer>
+</resources>
