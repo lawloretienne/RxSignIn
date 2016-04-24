@@ -134,13 +134,17 @@ public class SignInFragment extends BaseFragment {
                 .map(new Func1<CharSequence, CharSequence>() {
                     @Override
                     public CharSequence call(CharSequence charSequence) {
-                        disableError(emailInputLayout);
-                        // emailInputLayout.setErrorEnabled(false);
-                        emailInputLayout.setError(null);
+                        hideEmailError();
                         return charSequence;
                     }
                 })
                 .debounce(400, TimeUnit.MILLISECONDS)
+                .filter(new Func1<CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence charSequence) {
+                        return !TextUtils.isEmpty(charSequence);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread()) // UI Thread
                 .subscribe(new Subscriber<CharSequence>() {
                     @Override
@@ -155,17 +159,11 @@ public class SignInFragment extends BaseFragment {
 
                     @Override
                     public void onNext(CharSequence charSequence) {
-                        if (!TextUtils.isEmpty(charSequence)) {
-                            boolean isEmailValid = validateEmail(charSequence.toString());
-                            if (!isEmailValid) {
-                                enableError(emailInputLayout);
-                                // emailInputLayout.setErrorEnabled(true);
-                                emailInputLayout.setError(getString(R.string.invalid_email));
-                            } else {
-                                disableError(emailInputLayout);
-                                // emailInputLayout.setErrorEnabled(false);
-                                emailInputLayout.setError(null);
-                            }
+                        boolean isEmailValid = validateEmail(charSequence.toString());
+                        if (!isEmailValid) {
+                            showEmailError();
+                        } else {
+                            hideEmailError();
                         }
                     }
                 });
@@ -178,13 +176,17 @@ public class SignInFragment extends BaseFragment {
                 .map(new Func1<CharSequence, CharSequence>() {
                     @Override
                     public CharSequence call(CharSequence charSequence) {
-                        disableError(passwordInputLayout);
-                        // passwordInputLayout.setErrorEnabled(false);
-                        passwordInputLayout.setError(null);
+                        hidePasswordError();
                         return charSequence;
                     }
                 })
                 .debounce(400, TimeUnit.MILLISECONDS)
+                .filter(new Func1<CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence charSequence) {
+                        return !TextUtils.isEmpty(charSequence);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread()) // UI Thread
                 .subscribe(new Subscriber<CharSequence>() {
                     @Override
@@ -199,17 +201,11 @@ public class SignInFragment extends BaseFragment {
 
                     @Override
                     public void onNext(CharSequence charSequence) {
-                        if (!TextUtils.isEmpty(charSequence)) {
-                            boolean isPasswordValid = validatePassword(charSequence.toString());
-                            if (!isPasswordValid) {
-                                enableError(passwordInputLayout);
-                                // passwordInputLayout.setErrorEnabled(true);
-                                passwordInputLayout.setError(getString(R.string.invalid_password));
-                            } else {
-                                disableError(passwordInputLayout);
-                                // passwordInputLayout.setErrorEnabled(false);
-                                passwordInputLayout.setError(null);
-                            }
+                        boolean isPasswordValid = validatePassword(charSequence.toString());
+                        if (!isPasswordValid) {
+                            showPasswordError();
+                        } else {
+                            hidePasswordError();
                         }
                     }
                 });
@@ -241,13 +237,9 @@ public class SignInFragment extends BaseFragment {
                     @Override
                     public void onNext(Boolean validFields) {
                         if (validFields) {
-                            signInLinearLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-                            signInButton.setEnabled(true);
-                            signInButton.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+                            enableSignIn();
                         } else {
-                            signInLinearLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey_400));
-                            signInButton.setEnabled(false);
-                            signInButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
+                            disableSignIn();
                         }
                     }
                 });
@@ -283,6 +275,42 @@ public class SignInFragment extends BaseFragment {
 
     private boolean validatePassword(String password) {
         return password.length() > 5;
+    }
+
+    private void showEmailError(){
+        enableError(emailInputLayout);
+        // emailInputLayout.setErrorEnabled(true);
+        emailInputLayout.setError(getString(R.string.invalid_email));
+    }
+
+    private void hideEmailError(){
+        disableError(emailInputLayout);
+        // emailInputLayout.setErrorEnabled(false);
+        emailInputLayout.setError(null);
+    }
+
+    private void showPasswordError(){
+        enableError(passwordInputLayout);
+        // passwordInputLayout.setErrorEnabled(true);
+        passwordInputLayout.setError(getString(R.string.invalid_password));
+    }
+
+    private void hidePasswordError(){
+        disableError(passwordInputLayout);
+        // passwordInputLayout.setErrorEnabled(false);
+        passwordInputLayout.setError(null);
+    }
+
+    private void enableSignIn(){
+        signInLinearLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+        signInButton.setEnabled(true);
+        signInButton.setTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
+    }
+
+    private void disableSignIn(){
+        signInLinearLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.grey_400));
+        signInButton.setEnabled(false);
+        signInButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
     }
     // endregion
 }
