@@ -31,6 +31,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 
@@ -131,11 +132,10 @@ public class SignInFragment extends BaseFragment {
         // Checks for validity of the email input field
 
         Subscription emailSubscription = emailChangeObservable
-                .map(new Func1<CharSequence, CharSequence>() {
+                .doOnNext(new Action1<CharSequence>() {
                     @Override
-                    public CharSequence call(CharSequence charSequence) {
+                    public void call(CharSequence charSequence) {
                         hideEmailError();
-                        return charSequence;
                     }
                 })
                 .debounce(400, TimeUnit.MILLISECONDS)
@@ -173,11 +173,10 @@ public class SignInFragment extends BaseFragment {
         // Checks for validity of the password input field
 
         Subscription passwordSubscription = passwordChangeObservable
-                .map(new Func1<CharSequence, CharSequence>() {
+                .doOnNext(new Action1<CharSequence>() {
                     @Override
-                    public CharSequence call(CharSequence charSequence) {
+                    public void call(CharSequence charSequence) {
                         hidePasswordError();
-                        return charSequence;
                     }
                 })
                 .debounce(400, TimeUnit.MILLISECONDS)
